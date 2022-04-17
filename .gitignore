@@ -1,0 +1,4 @@
+.ini
+venv/
+.csv
+_fake_data/
