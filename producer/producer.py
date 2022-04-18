@@ -24,17 +24,18 @@ class Producer():
         self.ds = pd.read_csv(args.d)
         self.id = args.id
         self.topic = args.t
-        self.kafka = KafkaProducer(bootstrap_servers=args.ip, value_serializer= lambda v: json.dumps(v).encode('utf-8'))
+        self.kafka = KafkaProducer(bootstrap_servers=args.ip, 
+                            value_serializer= lambda v: json.dumps(v).encode('utf-8'),
+                            api_version=(0, 10, 1))
         
     def run(self, delay_time, loop):
         
         while loop >= 0:
             if loop > 0: loop -= 1 - 5e-1 
             #send ds
+            print("start sending...")
             for row in self.ds.iterrows():
-                msg = row
-                print(msg)
-                exit()
+                msg=row[1].to_dict()
                 self.kafka.send(self.topic, msg)
                 self.kafka.flush()
                 time.sleep(delay_time)
@@ -43,7 +44,7 @@ class Producer():
 
 if __name__ == "__main__":
     args = get_args()
-    assert args.id > 1, "id must > 0"
+    assert args.id > 0, "id must > 0"
     assert args.ip != "", "ip is not null"
     assert os.path.exists(args.d), "dataset not exists"
     assert args.s > 0, "arg-s must > 0"
