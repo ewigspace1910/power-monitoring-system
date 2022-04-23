@@ -28,18 +28,18 @@ class Producer():
                             value_serializer= lambda v: json.dumps(v).encode('utf-8'),
                             api_version=(0, 10, 1))
         
-    def run(self, delay_time, loop):
-        
         while loop >= 0:
             if loop > 0: loop -= 1 - 5e-1 
             #send ds
             print("start sending...")
             for row in self.ds.iterrows():
+                #adjust data
                 msg=row[1].to_dict()
+                msg['resident_id'] = self.id
+                #Send
                 self.kafka.send(self.topic, msg)
                 self.kafka.flush()
                 time.sleep(delay_time)
-			#end send
 
 
 if __name__ == "__main__":
@@ -50,5 +50,5 @@ if __name__ == "__main__":
     assert args.s > 0, "arg-s must > 0"
     
     producer = Producer(args)
-    print("Kafka")
+    print("run Kafka producer")
     producer.run(delay_time=args.s, loop=args.l)
