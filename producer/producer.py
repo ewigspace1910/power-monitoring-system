@@ -27,7 +27,8 @@ class Producer():
         self.kafka = KafkaProducer(bootstrap_servers=args.ip, 
                             value_serializer= lambda v: json.dumps(v).encode('utf-8'),
                             api_version=(0, 10, 1))
-        
+    
+    def run(self, delay_time, loop):
         while loop >= 0:
             if loop > 0: loop -= 1 - 5e-1 
             #send ds
@@ -36,6 +37,7 @@ class Producer():
                 #adjust data
                 msg=row[1].to_dict()
                 msg['resident_id'] = self.id
+                print(msg)
                 #Send
                 self.kafka.send(self.topic, msg)
                 self.kafka.flush()
