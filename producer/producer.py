@@ -4,6 +4,7 @@ import json
 import time
 import argparse
 import pandas as pd
+from datetime import datetime
 
 from kafka import KafkaProducer
 
@@ -37,7 +38,11 @@ class Producer():
                 #adjust data
                 msg=row[1].to_dict()
                 msg['resident_id'] = self.id
-                print(msg)
+ 
+                timestamp = time.time()
+                msg['utc_timestamp'] = str(datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d T %H:%M:%S Z").replace(" ",""))
+
+
                 #Send
                 self.kafka.send(self.topic, msg)
                 self.kafka.flush()

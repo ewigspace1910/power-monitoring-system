@@ -1,3 +1,6 @@
+from pyspark.sql.types import *
 
-class Resident_Schema():
-	pass
+c_schema = StructType() \
+        .add("utc_timestamp", TimestampType()) \
+        .add("grid_import", FloatType()) \
+        .add("resident_id", IntegerType())
