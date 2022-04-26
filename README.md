@@ -5,19 +5,20 @@ Simple project with Kafka, Spark streaming, PowerBI
 Detailed household load in minutely resolution in [here](https://data.open-power-system-data.org/household_data/)
 
 We reduce some features, then schema like: 
-| timestemp | pv |
+| timestemp | pv/min |
 
-## Init Kafka
-
-	1. Config
-	2. Producer
-
-## Spark Streaming App
-	1. Read data
-	2. Aggregate
-	3. Write stream
-
-## Cassandra
-
-## Dashboard
-Finaly, we using PowerBI to visualize and monitoring the streamings.
+## Requirements
+	1. Kafka
+	2. Hadoop + Spark
+	3. PowerBI
+	
+## Workflow
+	1. Client
+	in client device, run file producer.sh or producer.py to load file csv and send msg to kafka pipeline.
+	
+	2. Server(Kafka + Spark)
+	in server, run file processor.sh to submit job to Spark Job Manager.
+	
+	3. BI
+	Finaly, we using PowerBI to visualize and monitoring the streamings. Spark will define new msg(json) to send PowerBI datahouse by API
+	Run postman.py to get msg from kafka then send to PowerBI

@@ -34,14 +34,18 @@ class Producer():
             if loop > 0: loop -= 1 - 5e-1 
             #send ds
             print("start sending...")
+            start = 0
             for row in self.ds.iterrows():
                 #adjust data
                 msg=row[1].to_dict()
                 msg['resident_id'] = self.id
- 
+                
+                tmp = msg['grid_import']
+                msg['grid_import'] = round(tmp-start, 5) #we will send the pv/1min
+                start = tmp
+                
                 timestamp = time.time()
                 msg['utc_timestamp'] = str(datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d T %H:%M:%S Z").replace(" ",""))
-
 
                 #Send
                 self.kafka.send(self.topic, msg)
